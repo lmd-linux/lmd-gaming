@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_install:
+	DESTDIR=$$(pwd)/debian/lmd-gaming; \
+	cd executables; \
+	for FILE in $$(find * -type f); do \
+		install -m 755 -D -t $${DESTDIR}/$${FILE%/*} $${FILE}; \
+	done; \
+	cd ../resources; \
+	for FILE in $$(find * -type f); do \
+		install -m 644 -D -t $${DESTDIR}/$${FILE%/*} $${FILE}; \
+	done; \
+	cd ../symlinks; \
+	for FILE in $$(find * -type f); do \
+		install -m 777 -D -t $${DESTDIR}/$${FILE%/*} $${FILE}; \
+	done

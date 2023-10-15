@@ -1,0 +1,9 @@
+[Unit]
+Description=Set rapl permissions for games
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/intel-rapl-perms
+
+[Install]
+WantedBy=graphical.target
