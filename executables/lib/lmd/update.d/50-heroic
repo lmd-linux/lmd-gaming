@@ -1,0 +1,34 @@
+#! /bin/bash
+set -e
+
+HEROIC_GITHUB="https://api.github.com/repos/Heroic-Games-Launcher/HeroicGamesLauncher/releases"
+
+curlr() {
+    curl --retry 10 -sL "${@}"
+}
+
+INSTALLED_VERSION="$(apt list heroic 2>/dev/null | tail -n +2 | cut -d ' ' -f 2)"
+LATEST_VERSION="$(curlr "${HEROIC_GITHUB}/latest" | sed -n 's/ *"tag_name": "v\([^"]*\).*/\1/p')"
+
+if [[ "${1}" == "check" ]]; then
+    if [[ -n "${INSTALLED_VERSION}" ]]; then
+        if [[ "${INSTALLED_VERSION}" != "${LATEST_VERSION}" ]]; then
+            echo "${LATEST_VERSION}"
+        fi
+    fi
+fi
+
+if [[ "${1}" == "update" ]]; then
+    # https://github.com/Heroic-Games-Launcher/HeroicGamesLauncher/releases/download/v2.12.0/heroic_2.12.0_amd64.deb
+    if [[ -z "${INSTALLED_VERSION}" ]]; then
+        echo "Installing heroic ${LATEST_VERSION}"
+    else
+        echo "Upgrading heroic from ${INSTALLED_VERSION} to ${LATEST_VERSION}"
+    fi
+    rm -f /tmp/heroic.deb
+    ASSET_ID="$(curlr "${HEROIC_GITHUB}/latest" | jq -r '.assets[] | select(.name=="heroic_'"${LATEST_VERSION}"'_amd64.deb") | .id')"
+    URL="${HEROIC_GITHUB}/assets/${ASSET_ID}"
+    echo "Downloading ${URL}"
+    curlr -H "Accept: application/octet-stream" -o /tmp/heroic.deb "${URL}"
+    apt install /tmp/heroic.deb
+fi

@@ -1,0 +1,21 @@
+#! /bin/sh
+set -e
+
+groupadd -r games || true
+
+cd /home
+for USER in *; do
+    echo "User ${USER}"
+    for FILE in $(find /etc/skel -type f); do
+        NEW_FILE="/home/${USER}/${FILE#/etc/skel/}"
+        su - ${USER} -c "mkdir -p $(dirname ${NEW_FILE})"
+        if [ -f "${NEW_FILE}" ]; then
+            echo "${NEW_FILE} already exists"
+        else
+            su - ${USER} -c "cp ${FILE} ${NEW_FILE}"
+            echo "Copied ${NEW_FILE}"
+        fi
+    done
+    gpasswd -a ${USER} games
+done
+#DEBHELPER#

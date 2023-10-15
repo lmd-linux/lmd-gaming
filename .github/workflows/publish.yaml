@@ -1,0 +1,17 @@
+name: Publish
+on:
+  push:
+    path:
+      - 'debian/**'
+      - 'executables/**'
+      - 'resources/**'
+      - 'symlinks/**'
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish
+        uses: lmd-linux/publish-debuild@v2
+        with:
+          repo: ${{ github.repository }}
+          ssh_key: ${{ secrets.SSH_KEY }}
