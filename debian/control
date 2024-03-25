@@ -7,6 +7,9 @@ Build-Depends: debhelper-compat (= 13)
 
 Package: lmd-gaming
 Architecture: amd64
-Depends: gamemode, lmd-desktop, mangohud:i386, mangohud:amd64, mesa-utils, protontricks, retroarch, steam-installer
+Depends: gamemode, lmd-desktop, mangohud:i386, mangohud:amd64, mesa-utils, protontricks, retroarch,
+ steam-installer
+Recommends: gstreamer1.0-plugins-bad:i386, gstreamer1.0-plugins-base:i386,
+ gstreamer1.0-plugins-good:i386, gstreamer1.0-plugins-ugly:i386
 Description: Gaming metapackage for lmd Linux
  Collection of gaming packages and configurations for lmd Linux
