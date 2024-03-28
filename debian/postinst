@@ -5,6 +5,10 @@ groupadd -r games || true
 
 cd /home
 for USER in *; do
+    if ! id ${USER} >/dev/null 2>&1; then
+        echo "${USER} isn't a real user"
+        continue
+    fi
     echo "User ${USER}"
     for FILE in $(find /etc/skel -type f); do
         NEW_FILE="/home/${USER}/${FILE#/etc/skel/}"
