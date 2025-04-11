@@ -8,7 +8,7 @@ curlr() {
 }
 
 INSTALLED_VERSION="$(apt list heroic 2>/dev/null | tail -n +2 | cut -d ' ' -f 2)"
-LATEST_VERSION="$(curlr "${HEROIC_GITHUB}/latest" | sed -n 's/ *"tag_name": "v\([^"]*\).*/\1/p')"
+LATEST_VERSION="$(curlr "${HEROIC_GITHUB}/latest" | jq -r '.tag_name' | sed 's/^v//')"
 
 if [[ "${1}" == "check" ]]; then
     if [[ -n "${INSTALLED_VERSION}" ]]; then
@@ -26,7 +26,7 @@ if [[ "${1}" == "update" ]]; then
         echo "Upgrading heroic from ${INSTALLED_VERSION} to ${LATEST_VERSION}"
     fi
     rm -f /tmp/heroic.deb
-    ASSET_ID="$(curlr "${HEROIC_GITHUB}/latest" | jq -r '.assets[] | select(.name=="heroic_'"${LATEST_VERSION}"'_amd64.deb") | .id')"
+    ASSET_ID="$(curlr "${HEROIC_GITHUB}/latest" | jq -r '.assets[] | select(.name=="Heroic-'"${LATEST_VERSION}"'-linux-amd64.deb") | .id')"
     URL="${HEROIC_GITHUB}/assets/${ASSET_ID}"
     echo "Downloading ${URL}"
     curlr -H "Accept: application/octet-stream" -o /tmp/heroic.deb "${URL}"
